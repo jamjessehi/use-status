@@ -1,9 +1,28 @@
+.tabs {
+  display: flex;
+  height: 50px;
+  border-bottom: 1px solid #ddd;
+}
+
+.tab-pane {
+  display: flex;
+  align-items: center;
+  padding-left: 1em;
+  padding-right: 1em;
+  cursor: pointer;
+}
+
+.tab-pane.checked {
+  border-bottom: 2px solid pink;
+}
+
 .container {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   min-height: 300px;
+  margin-top: 2em;
   background-color: transparent;
 }
 

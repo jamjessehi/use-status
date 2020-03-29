@@ -1,92 +1,42 @@
-import React, { useEffect, useMemo } from "react";
-import useStatus from "useStatus";
-// import delay from "utils/delay";
+import React, { useState } from "react";
+import StateDemo from "./StateDemo";
+import ReducerDemo from "./ReducerDemo";
 import "./App.css";
 
-function App() {
-  const {
-    data: src,
-    error: errorFetchDog,
-    pending: pendingFetchDog,
-    resolve: resolveFetchDog,
-    reject: rejectFetchDog,
-    status: statusDog
-  } = useStatus();
+export default () => {
+  const [tab, setTab] = useState(0);
 
-  const {
-    pending: pendingImg,
-    resolve: resolveImg,
-    reject: rejectImg,
-    status: statusImg,
-    error: errorImg
-  } = useStatus();
+  let Content = () => null;
 
-  const containerClass = useMemo(() => {
-    if (statusImg.isLoading) {
-      return "container loading";
-    }
-    return "container";
-  }, [statusImg]);
-
-  useEffect(() => {
-    const fetchDog = async () => {
-      const url = "https://random.dog/woof.json";
-
-      pendingFetchDog();
-
-      try {
-        const json = await fetch(url).then(res => res.json());
-
-        const { url: imgUrl } = json;
-
-        pendingImg();
-        resolveFetchDog(imgUrl);
-      } catch (error) {
-        console.log("❌", error);
-        rejectFetchDog(error);
-      }
-    };
-
-    fetchDog();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  function handleImgOnLoad() {
-    console.log("img is completed! 🌄");
-    resolveImg();
+  if (tab === 0) {
+    Content = StateDemo;
   }
 
-  function handleImgOnError() {
-    rejectImg("Whoops, dog is missing");
+  if (tab === 1) {
+    Content = ReducerDemo;
   }
 
-  if (statusDog.isLoading) {
-    return "loading...";
-  }
+  const tabPaneClasses = i => {
+    const cls = ["tab-pane"];
 
-  if (statusDog.isRejected) {
-    return errorFetchDog?.message || null;
-  }
-
-  if (statusDog.isResolved) {
-    let imgContent = (
-      <img
-        alt="dog"
-        src={src}
-        onLoad={handleImgOnLoad}
-        onError={handleImgOnError}
-      />
-    );
-
-    if (statusImg.isRejected) {
-      imgContent = errorImg;
+    if (i === tab) {
+      cls.push("checked");
     }
 
-    return <div className={containerClass}>{imgContent}</div>;
-  }
+    return cls.join(" ");
+  };
 
-  return null;
-}
-
-export default App;
+  return (
+    <div>
+      <div className="tabs">
+        <div className={tabPaneClasses(0)} onClick={() => setTab(0)}>
+          StateDemo
+        </div>
+        <div className={tabPaneClasses(1)} onClick={() => setTab(1)}>
+          ReducerDemo
+        </div>
+      </div>
+      <Content />
+    </div>
+  );
+};
