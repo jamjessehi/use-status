@@ -44,4 +44,11 @@
 
 .next-btn-wrap button {
   height: 3em;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.next-btn-wrap.failed button {
+  color: red;
+  border-color: red;
 }

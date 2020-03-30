@@ -3,6 +3,8 @@ import useStatus from "useStatus";
 // import delay from "utils/delay";
 import "./App.css";
 
+const randomError = (n = 0.5) => Math.random() < n;
+
 function App() {
   const {
     state: { data: src, error: errorFetchDog },
@@ -30,17 +32,26 @@ function App() {
   }, [statusImg]);
 
   async function fetchDog() {
-    const url = "https://dog.ceo/api/breeds/image/random";
+    const url = randomError()
+      ? "https://dog.ceo/api/breeds/image/random"
+      : "https://no";
 
     try {
       const json = await fetch(url).then(res => res.json());
 
-      const { message } = json;
+      let { message } = json;
+
+      if (randomError()) {
+        throw new Error("api is wrong!");
+      }
+
+      if (randomError()) {
+        message = "no";
+      }
 
       requestImg();
       receiveFetchDog(message);
     } catch (error) {
-      console.log("❌", error);
       failFetchDog(error);
     }
   }
@@ -58,7 +69,6 @@ function App() {
   }
 
   function handleImgOnLoad() {
-    console.log("img is completed! 🌄");
     receiveImg();
   }
 
@@ -91,13 +101,13 @@ function App() {
     let nextBtn = null;
 
     // 不是isPending状态下都显示
-    if (!statusImg.isPending) {
+    if (!statusFetchDog.isPending || !statusImg.isPending) {
       let btnText = "next dog";
-      if (statusImg.isRejected) {
+      if (statusFetchDog.isRejected || statusImg.isRejected) {
         btnText = "retry";
       }
       nextBtn = (
-        <div className="next-btn-wrap">
+        <div className={`next-btn-wrap${statusImg.isRejected ? " faild" : ""}`}>
           <button onClick={handleNextDog} disabled={updating}>
             {updating ? "waiting" : btnText}
           </button>
