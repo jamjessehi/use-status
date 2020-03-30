@@ -12,7 +12,7 @@ const RECEIVE = "RECEIVE";
 const ERROR = "ERROR";
 
 const initialState = {
-  data: undefined,
+  data: {},
   status: IDLE,
   error: false
 };
