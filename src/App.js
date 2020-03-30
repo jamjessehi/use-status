@@ -5,20 +5,19 @@ import "./App.css";
 
 function App() {
   const {
-    data: src,
-    error: errorFetchDog,
-    pending: pendingFetchDog,
-    resolve: resolveFetchDog,
-    reject: rejectFetchDog,
-    status: statusDog
+    state: { data: src, error: errorFetchDog },
+    status: statusFetchDog,
+    request: requestFetchDog,
+    receive: receiveFetchDog,
+    fail: failFetchDog
   } = useStatus();
 
   const {
-    pending: pendingImg,
-    resolve: resolveImg,
-    reject: rejectImg,
+    state: { error: errorImg },
     status: statusImg,
-    error: errorImg
+    request: requestImg,
+    receive: receiveImg,
+    fail: failImg
   } = useStatus();
 
   const containerClass = useMemo(() => {
@@ -32,18 +31,18 @@ function App() {
     const fetchDog = async () => {
       const url = "https://random.dog/woof.json";
 
-      pendingFetchDog();
+      requestFetchDog();
 
       try {
         const json = await fetch(url).then(res => res.json());
 
         const { url: imgUrl } = json;
 
-        pendingImg();
-        resolveFetchDog(imgUrl);
+        requestImg();
+        receiveFetchDog(imgUrl);
       } catch (error) {
         console.log("❌", error);
-        rejectFetchDog(error);
+        failFetchDog(error);
       }
     };
 
@@ -54,22 +53,22 @@ function App() {
 
   function handleImgOnLoad() {
     console.log("img is completed! 🌄");
-    resolveImg();
+    receiveImg();
   }
 
   function handleImgOnError() {
-    rejectImg("Whoops, dog is missing");
+    failImg(new Error("Whoops, dog is missing"));
   }
 
-  if (statusDog.isLoading) {
+  if (statusFetchDog.isLoading) {
     return "loading...";
   }
 
-  if (statusDog.isRejected) {
+  if (statusFetchDog.isRejected) {
     return errorFetchDog?.message || null;
   }
 
-  if (statusDog.isResolved) {
+  if (statusFetchDog.isResolved) {
     let imgContent = (
       <img
         alt="dog"
@@ -80,7 +79,7 @@ function App() {
     );
 
     if (statusImg.isRejected) {
-      imgContent = errorImg;
+      imgContent = errorImg?.message || null;
     }
 
     return <div className={containerClass}>{imgContent}</div>;
