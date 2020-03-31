@@ -1,4 +1,4 @@
-.container {
+.img-wrap {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -7,7 +7,7 @@
   background-color: transparent;
 }
 
-.container.loading {
+.img-wrap.loading {
   background-image: linear-gradient(
     90deg,
     #f2f2f2 25%,
@@ -18,11 +18,11 @@
   animation: load 1.4s ease infinite;
 }
 
-.container.loading img {
+.img-wrap.loading img {
   display: none;
 }
 
-.container img {
+.img-wrap img {
   max-width: 100%;
 }
 
@@ -51,4 +51,11 @@
 .next-btn-wrap.failed button {
   color: red;
   border-color: red;
+}
+
+.error-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 2em;
+  color: red;
 }
